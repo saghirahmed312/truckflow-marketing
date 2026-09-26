@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request a Demo — TruckFlow</title>
+  <meta name="description" content="See TruckFlow on your own fleet. Request a 30-minute demo tailored to your dispatch and lanes.">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="/" class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17V7a1 1 0 0 1 1-1h9v11"/><path d="M13 10h4l4 4v3h-2"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>
+        </span>
+        TruckFlow
+      </a>
+      <nav class="main-nav">
+        <a href="/features.html">Features</a>
+        <a href="/index.html#pricing">Pricing</a>
+        <a href="/index.html#proof">Customers</a>
+      </nav>
+      <div class="header-actions">
+        <a href="/request-demo.html" class="btn btn-primary active">Request a Demo</a>
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-nav" hidden>
+      <a href="/features.html">Features</a>
+      <a href="/index.html#pricing">Pricing</a>
+      <a href="/index.html#proof">Customers</a>
+      <a href="/request-demo.html" class="btn btn-primary btn-block">Request a Demo</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="demo-layout">
+
+        <div class="demo-side">
+          <span class="eyebrow">Request a Demo</span>
+          <h2>See TruckFlow running on your own fleet</h2>
+          <p>Tell us a bit about your operation and we'll set up a 30-minute walkthrough tailored to how your dispatch actually works — no generic slide deck.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Live walkthrough of dispatch, tracking, and billing</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Questions answered by someone who knows the product, not a script</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>No obligation, no credit card</li>
+          </ul>
+        </div>
+
+        <div class="form-card">
+          <form id="demo-form" novalidate>
+            <!-- FormSubmit settings: email subject, table layout, and a honeypot spam trap -->
+            <input type="hidden" name="_subject" value="New TruckFlow demo request">
+            <input type="hidden" name="_template" value="table">
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+            <div class="form-row">
+              <div class="field">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required autocomplete="name">
+              </div>
+              <div class="field">
+                <label for="company">Company Name</label>
+                <input type="text" id="company" name="company" required autocomplete="organization">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="email">Work Email</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+              </div>
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" required autocomplete="tel">
+              </div>
+            </div>
+            <div class="field">
+              <label for="fleet-size">Fleet Size</label>
+              <select id="fleet-size" name="fleet_size" required>
+                <option value="" disabled selected>Select fleet size</option>
+                <option value="1-10">1–10 trucks</option>
+                <option value="11-50">11–50 trucks</option>
+                <option value="51-200">51–200 trucks</option>
+                <option value="200+">200+ trucks</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">Message (optional)</label>
+              <textarea id="message" name="message" placeholder="Anything specific you'd like us to cover?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-lg">Request a Demo</button>
+            <p class="form-status" id="form-status"></p>
+          </form>
+
+          <div class="confirmation" id="demo-confirmation" hidden>
+            <div class="check-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <h3>Thanks — request received</h3>
+            <p>We'll be in touch within one business day to schedule your demo.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand">
+            <span class="brand-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17V7a1 1 0 0 1 1-1h9v11"/><path d="M13 10h4l4 4v3h-2"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>
+            </span>
+            TruckFlow
+          </div>
+          <p>The all-in-one TMS for modern carriers and brokers.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="/features.html">Features</a></li>
+            <li><a href="/index.html#pricing">Pricing</a></li>
+            <li><a href="/request-demo.html">Request a Demo</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="mailto:hello@trucksflo.com">Contact</a></li>
+            <li><a href="/index.html#proof">Customers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span id="year"></span> TruckFlow. All rights reserved.</span>
+        <span>Made for carriers and brokers.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
