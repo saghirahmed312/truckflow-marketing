@@ -29,8 +29,22 @@ function initFeatureModal() {
     content.querySelector('h2').id = 'feature-modal-title';
     content.querySelectorAll('li').forEach(li => li.insertAdjacentHTML('afterbegin', CHECK_ICON));
 
-    const icon = card.querySelector('.feature-icon svg').outerHTML;
-    visual.innerHTML = `
+    // Real screenshot when the card's template names one; otherwise a mock
+    // app window built around the card's icon.
+    const { image, alt } = tpl.dataset;
+    modal.classList.toggle('has-image', Boolean(image));
+    if (image) {
+      visual.setAttribute('aria-hidden', 'false');
+      visual.innerHTML = `
+        <figure class="shot-frame">
+          <div class="mock-bar"><i></i><i></i><i></i></div>
+          <img src="${image}" alt="" width="1200" height="750" decoding="async">
+        </figure>`;
+      visual.querySelector('img').alt = alt || '';
+    } else {
+      visual.setAttribute('aria-hidden', 'true');
+      const icon = card.querySelector('.feature-icon svg').outerHTML;
+      visual.innerHTML = `
       <div class="mock-window">
         <div class="mock-bar"><i></i><i></i><i></i></div>
         <div class="mock-body">
@@ -43,6 +57,7 @@ function initFeatureModal() {
           <div class="mock-row"><span class="mock-line" style="max-width:85%"></span><span class="mock-pill"></span></div>
         </div>
       </div>`;
+    }
 
     modal.classList.remove('is-closing');
     document.documentElement.classList.add('modal-open');
@@ -69,7 +84,15 @@ function initFeatureModal() {
   document.querySelectorAll('.feature-card').forEach(card => {
     const btn = card.querySelector('.feature-more');
     const tpl = card.querySelector('.feature-detail-tpl');
-    if (btn && tpl) btn.addEventListener('click', () => open(card, tpl, btn));
+    if (!btn || !tpl) return;
+    btn.addEventListener('click', () => open(card, tpl, btn));
+    // Screenshots aren't loaded with the page; warm the cache on first
+    // hover/focus so the image is usually ready by the time the modal opens.
+    if (tpl.dataset.image) {
+      const prefetch = () => { new Image().src = tpl.dataset.image; };
+      card.addEventListener('pointerenter', prefetch, { once: true });
+      btn.addEventListener('focus', prefetch, { once: true });
+    }
   });
 
   modal.querySelector('.modal-close').addEventListener('click', close);
