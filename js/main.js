@@ -122,22 +122,15 @@ function initHeroCarousel() {
   const INTERVAL = 4500;
   let current = 0;
   let timer = null;
-  let paused = false;
-
-  // Slides after the first are deferred until the page has loaded, so the
-  // carousel doesn't compete with the rest of the page for bandwidth.
-  const load = (slide) => {
-    const img = slide.querySelector('img[data-src]');
-    if (img) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
-  };
-  if (document.readyState === 'complete') slides.forEach(load);
-  else window.addEventListener('load', () => slides.forEach(load), { once: true });
+  // Paused while the pointer is over it OR focus is inside it; tracked
+  // separately so one ending doesn't resume while the other still holds.
+  let hovering = false;
+  let focused = false;
 
   const show = (n) => {
     current = (n + slides.length) % slides.length;
     slides.forEach((slide, i) => {
       const active = i === current;
-      if (active) load(slide);
       slide.classList.toggle('is-active', active);
       slide.setAttribute('aria-hidden', String(!active));
     });
@@ -151,17 +144,17 @@ function initHeroCarousel() {
   const stop = () => { clearInterval(timer); timer = null; };
   const start = () => {
     stop();
-    if (autoplay && !paused && !document.hidden) timer = setInterval(() => show(current + 1), INTERVAL);
+    if (autoplay && !hovering && !focused && !document.hidden) timer = setInterval(() => show(current + 1), INTERVAL);
   };
 
   dots.forEach((dot, i) => dot.addEventListener('click', () => { show(i); start(); }));
 
-  const pause = () => { paused = true; stop(); };
-  const resume = () => { paused = false; start(); };
-  root.addEventListener('mouseenter', pause);
-  root.addEventListener('mouseleave', resume);
-  root.addEventListener('focusin', pause);
-  root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget)) resume(); });
+  root.addEventListener('mouseenter', () => { hovering = true; stop(); });
+  root.addEventListener('mouseleave', () => { hovering = false; start(); });
+  root.addEventListener('focusin', () => { focused = true; stop(); });
+  root.addEventListener('focusout', (e) => {
+    if (!root.contains(e.relatedTarget)) { focused = false; start(); }
+  });
   document.addEventListener('visibilitychange', start);
 
   // Horizontal swipe on touch devices (vertical scrolling is left alone
