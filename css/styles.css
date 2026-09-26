@@ -90,7 +90,7 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 15px;
   font-weight: 600;
   border: 1px solid transparent;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   white-space: nowrap;
 }
 .btn-primary {
@@ -100,8 +100,8 @@ button { font-family: inherit; cursor: pointer; }
 }
 .btn-primary:hover {
   background: var(--color-accent-dark);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(20, 184, 166, 0.28);
 }
 .btn-secondary {
   background: var(--color-white);
@@ -111,7 +111,10 @@ button { font-family: inherit; cursor: pointer; }
 .btn-secondary:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: var(--shadow-sm);
 }
+.btn:active { transform: scale(0.98); }
 .btn-block { width: 100%; }
 .btn-lg { padding: 15px 32px; font-size: 16px; }
 
@@ -182,6 +185,9 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ============ Hero ============ */
 .hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   padding: 96px 0 80px;
   background:
     radial-gradient(1100px 480px at 15% -10%, var(--color-primary-light) 0%, rgba(234,242,251,0) 60%),
@@ -250,11 +256,17 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 28px;
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
 }
 .feature-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(20, 184, 166, 0.45);
+}
+.feature-icon { transition: background-color 0.3s ease, color 0.3s ease; }
+.feature-card:hover .feature-icon {
+  background: var(--color-accent);
+  color: #fff;
 }
 .feature-icon {
   width: 44px;
@@ -335,15 +347,24 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   flex-direction: column;
 }
+.price-card { transition: box-shadow 0.3s ease, transform 0.3s ease; }
+.price-card:hover { box-shadow: var(--shadow-md); }
 .price-card.featured {
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-md);
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 20px 48px rgba(13, 59, 102, 0.16);
   position: relative;
+  z-index: 1;
+  transform: scale(1.05);
+  background: linear-gradient(180deg, #f0fdfa 0%, var(--color-bg) 38%);
 }
+.price-card.featured:hover { box-shadow: 0 24px 56px rgba(13, 59, 102, 0.2); }
 .price-badge {
   position: absolute;
-  top: -13px;
-  left: 28px;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.35);
   background: var(--color-accent);
   color: #fff;
   font-size: 12px;
@@ -602,6 +623,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 900px) {
   .feature-grid { grid-template-columns: repeat(2, 1fr); }
   .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+  .price-card.featured { transform: none; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .demo-layout { grid-template-columns: 1fr; gap: 40px; }
   .feature-detail,
@@ -640,3 +662,83 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--color-text);
 }
 .mobile-nav .btn { margin-top: 24px; }
+
+/* ============ Motion ============ */
+/* Hero background: a slowly drifting teal/blue wash, plus faint dashed
+   "lane lines" that roll toward the right to suggest freight in motion. */
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+.hero::before {
+  inset: -20%;
+  background:
+    radial-gradient(40% 45% at 20% 25%, rgba(20, 93, 160, 0.14) 0%, transparent 70%),
+    radial-gradient(35% 40% at 80% 20%, rgba(20, 184, 166, 0.14) 0%, transparent 70%),
+    radial-gradient(45% 40% at 60% 80%, rgba(20, 93, 160, 0.08) 0%, transparent 70%);
+  animation: hero-drift 22s ease-in-out infinite alternate;
+}
+.hero::after {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 520px;
+  background:
+    repeating-linear-gradient(90deg, rgba(20, 93, 160, 0.10) 0 36px, transparent 36px 84px) 0 140px / 100% 2px no-repeat,
+    repeating-linear-gradient(90deg, rgba(20, 184, 166, 0.12) 0 36px, transparent 36px 84px) 0 300px / 100% 2px no-repeat,
+    repeating-linear-gradient(90deg, rgba(20, 93, 160, 0.08) 0 36px, transparent 36px 84px) 0 460px / 100% 2px no-repeat;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+  animation: hero-lanes 3.5s linear infinite;
+}
+@keyframes hero-drift {
+  from { transform: translate3d(-3%, -2%, 0) rotate(0deg); }
+  to   { transform: translate3d(3%, 2%, 0) rotate(4deg); }
+}
+@keyframes hero-lanes {
+  from { background-position-x: 0, 0, 0; }
+  to   { background-position-x: 84px, 84px, 84px; }
+}
+
+/* Hero entrance: fade + short rise, staggered per element. */
+@keyframes rise-in {
+  from { opacity: 0; translate: 0 16px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+.hero .container > * {
+  animation: rise-in 0.4s ease-out both;
+}
+.hero .container > :nth-child(2) { animation-delay: 0.08s; }
+.hero .container > :nth-child(3) { animation-delay: 0.16s; }
+.hero .container > :nth-child(4) { animation-delay: 0.24s; }
+.hero .container > :nth-child(5) { animation-delay: 0.34s; }
+
+/* Scroll reveal: js/main.js adds .reveal to below-the-fold blocks and
+   .is-visible the first time each enters the viewport. Uses `translate`
+   (not `transform`) so it composes with hover lifts and the featured
+   pricing card's scale. Without JS, nothing gets .reveal and all
+   content is simply visible. */
+.reveal {
+  opacity: 0;
+  translate: 0 24px;
+  transition: opacity 0.4s ease-out, translate 0.4s ease-out,
+              box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero::after { animation: none; }
+  .btn:hover, .btn:active, .feature-card:hover { transform: none; }
+}

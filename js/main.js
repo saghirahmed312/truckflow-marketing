@@ -3,8 +3,49 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
+  initScrollReveal();
   initDemoForm();
 });
+
+// Fade/slide blocks into view the first time they enter the viewport.
+// Skipped entirely for reduced-motion users or browsers without
+// IntersectionObserver, in which case everything just renders visible.
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const selectors = [
+    '.section-head', '.feature-card', '.logo-row', '.testimonial',
+    '.price-card', '.pricing-footnote', '.cta-band', '.feature-detail',
+  ];
+  const targets = document.querySelectorAll(selectors.join(','));
+  if (!targets.length) return;
+
+  // Stagger siblings in a grid so cards cascade in rather than pop at once.
+  targets.forEach(el => {
+    el.classList.add('reveal');
+    const grid = el.closest('.feature-grid, .pricing-grid');
+    if (grid) {
+      const i = Array.prototype.indexOf.call(grid.children, el);
+      el.style.transitionDelay = `${Math.min(i, 5) * 70}ms`;
+    }
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      el.classList.add('is-visible');
+      observer.unobserve(el);
+      // Drop the stagger delay once revealed so hover effects stay snappy.
+      if (el.style.transitionDelay) {
+        setTimeout(() => { el.style.transitionDelay = ''; }, 800);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  targets.forEach(el => observer.observe(el));
+}
 
 function initMobileNav() {
   const toggle = document.querySelector('.nav-toggle');
