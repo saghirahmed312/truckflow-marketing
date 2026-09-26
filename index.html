@@ -57,10 +57,32 @@
         </div>
         <p class="hero-note">No credit card required · Setup in a day, not a quarter</p>
 
-        <div class="hero-art">
-          <div class="hero-art-inner">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v5"/></svg>
-            Product screenshot — dispatch board goes here
+        <div class="hero-showcase hero-carousel" aria-roledescription="carousel" aria-label="TruckFlow product screenshots">
+          <div class="hero-art">
+            <div class="mock-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="carousel-track">
+              <figure class="carousel-slide is-active" data-caption="Orders" role="group" aria-roledescription="slide" aria-label="1 of 4: Orders">
+                <img src="/images/feature-orders.jpg" fetchpriority="high" alt="TruckFlow Orders list showing loads with trip numbers, customers, pickup and delivery details, rates, and status" width="1200" height="750" decoding="async">
+              </figure>
+              <figure class="carousel-slide" data-caption="Shipment &amp; stops builder" role="group" aria-roledescription="slide" aria-label="2 of 4: Shipment &amp; stops builder" aria-hidden="true">
+                <img data-src="/images/feature-dispatch.jpg" alt="TruckFlow shipment editor with auto-calculated distance and a multi-stop trip builder" width="1200" height="750" decoding="async">
+              </figure>
+              <figure class="carousel-slide" data-caption="Order summary with mileage" role="group" aria-roledescription="slide" aria-label="3 of 4: Order summary with mileage" aria-hidden="true">
+                <img data-src="/images/feature-distance.jpg" alt="TruckFlow order summary listing each stop with the calculated distance between stops" width="1200" height="750" decoding="async">
+              </figure>
+              <figure class="carousel-slide" data-caption="Border crossing &amp; documents" role="group" aria-roledescription="slide" aria-label="4 of 4: Border crossing &amp; documents" aria-hidden="true">
+                <img data-src="/images/feature-customs.jpg" alt="TruckFlow order with Border Crossing details, revenue, and documents" width="1200" height="750" decoding="async">
+              </figure>
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <span class="carousel-caption" aria-hidden="true">Orders</span>
+            <div class="carousel-dots">
+              <button type="button" class="carousel-dot" aria-label="Show slide 1: Orders" aria-current="true"></button>
+              <button type="button" class="carousel-dot" aria-label="Show slide 2: Shipment &amp; stops builder"></button>
+              <button type="button" class="carousel-dot" aria-label="Show slide 3: Order summary with mileage"></button>
+              <button type="button" class="carousel-dot" aria-label="Show slide 4: Border crossing &amp; documents"></button>
+            </div>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
+  initHeroCarousel();
   initScrollReveal();
   initFeatureModal();
   initDemoForm();
@@ -104,6 +105,80 @@ function initFeatureModal() {
     document.documentElement.classList.remove('modal-open');
     trigger?.focus();
   });
+}
+
+// Hero screenshot carousel: crossfades every 4.5s, dots jump to a slide,
+// pauses on hover/focus and while the tab is hidden, swipes on touch.
+// Reduced-motion users get the first slide, no autoplay (dots still work).
+function initHeroCarousel() {
+  const root = document.querySelector('.hero-carousel');
+  if (!root) return;
+
+  const slides = [...root.querySelectorAll('.carousel-slide')];
+  const dots = [...root.querySelectorAll('.carousel-dot')];
+  const caption = root.querySelector('.carousel-caption');
+  const track = root.querySelector('.carousel-track');
+  const autoplay = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const INTERVAL = 4500;
+  let current = 0;
+  let timer = null;
+  let paused = false;
+
+  // Slides after the first are deferred until the page has loaded, so the
+  // carousel doesn't compete with the rest of the page for bandwidth.
+  const load = (slide) => {
+    const img = slide.querySelector('img[data-src]');
+    if (img) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+  };
+  if (document.readyState === 'complete') slides.forEach(load);
+  else window.addEventListener('load', () => slides.forEach(load), { once: true });
+
+  const show = (n) => {
+    current = (n + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === current;
+      if (active) load(slide);
+      slide.classList.toggle('is-active', active);
+      slide.setAttribute('aria-hidden', String(!active));
+    });
+    dots.forEach((dot, i) => {
+      if (i === current) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+    caption.textContent = slides[current].dataset.caption;
+  };
+
+  const stop = () => { clearInterval(timer); timer = null; };
+  const start = () => {
+    stop();
+    if (autoplay && !paused && !document.hidden) timer = setInterval(() => show(current + 1), INTERVAL);
+  };
+
+  dots.forEach((dot, i) => dot.addEventListener('click', () => { show(i); start(); }));
+
+  const pause = () => { paused = true; stop(); };
+  const resume = () => { paused = false; start(); };
+  root.addEventListener('mouseenter', pause);
+  root.addEventListener('mouseleave', resume);
+  root.addEventListener('focusin', pause);
+  root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget)) resume(); });
+  document.addEventListener('visibilitychange', start);
+
+  // Horizontal swipe on touch devices (vertical scrolling is left alone
+  // via touch-action: pan-y on the track).
+  let startX = null, startY = null;
+  track.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+  }, { passive: true });
+  track.addEventListener('touchend', (e) => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    startX = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { show(current + (dx < 0 ? 1 : -1)); start(); }
+  }, { passive: true });
+
+  start();
 }
 
 // Fade/slide blocks into view the first time they enter the viewport.
