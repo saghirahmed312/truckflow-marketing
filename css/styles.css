@@ -289,6 +289,187 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--color-text-dim);
 }
 
+/* Whole card is clickable: the "Learn more" button's ::after stretches
+   over the card, so there's one real, focusable control per card. */
+.feature-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.feature-more {
+  margin-top: auto;
+  padding: 16px 0 0;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-accent-dark);
+}
+.feature-more::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+}
+.feature-more:focus-visible { outline: none; }
+.feature-more:focus-visible::after {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+.feature-more svg { width: 16px; height: 16px; transition: translate 0.25s ease; }
+.feature-card:hover .feature-more svg { translate: 4px 0; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ============ Feature modal ============ */
+html.modal-open { overflow: hidden; }
+.feature-modal {
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  width: min(900px, calc(100% - 32px));
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: 0 30px 80px rgba(13, 59, 102, 0.3);
+}
+.feature-modal::backdrop {
+  background: rgba(13, 59, 102, 0.45);
+  backdrop-filter: blur(3px);
+}
+.feature-modal[open] { animation: modal-in 0.3s ease-out; }
+.feature-modal[open]::backdrop { animation: backdrop-in 0.3s ease-out; }
+.feature-modal.is-closing { animation: modal-out 0.22s ease-in forwards; }
+.feature-modal.is-closing::backdrop { animation: backdrop-out 0.22s ease-in forwards; }
+@keyframes modal-in {
+  from { opacity: 0; translate: 0 16px; scale: 0.97; }
+}
+@keyframes modal-out {
+  to { opacity: 0; translate: 0 12px; scale: 0.98; }
+}
+@keyframes backdrop-in { from { opacity: 0; } }
+@keyframes backdrop-out { to { opacity: 0; } }
+
+.feature-modal-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+}
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: color 0.25s ease, border-color 0.25s ease, rotate 0.25s ease;
+}
+.modal-close:hover { color: var(--color-primary-dark); border-color: var(--color-primary); rotate: 90deg; }
+.modal-close:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.modal-close svg { width: 18px; height: 18px; }
+
+/* Placeholder product visual: a mock app window built around the
+   feature's icon. Swap for a real screenshot (an <img>) later. */
+.modal-visual {
+  background: linear-gradient(160deg, var(--color-primary-dark) 0%, var(--color-primary) 60%, var(--color-accent-dark) 130%);
+  padding: 40px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mock-window {
+  width: 100%;
+  max-width: 340px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: rise-in 0.4s 0.1s ease-out both;
+}
+.mock-bar {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--color-bg-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+.mock-bar i { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; }
+.mock-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.mock-head { display: flex; align-items: center; gap: 12px; }
+.mock-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.mock-icon svg { width: 24px; height: 24px; }
+.mock-title { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.mock-line { display: block; height: 8px; border-radius: 4px; background: var(--color-border); }
+.mock-line.strong { background: #cbd5e1; height: 10px; }
+.mock-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+.mock-row .mock-line { flex: 1; }
+.mock-pill { width: 42px; height: 14px; border-radius: 999px; background: rgba(20, 184, 166, 0.25); flex-shrink: 0; }
+.mock-pill.blue { background: rgba(20, 93, 160, 0.2); }
+
+.modal-body { padding: 48px 40px 40px; }
+.modal-body .eyebrow { margin-bottom: 10px; }
+.modal-body h2 {
+  font-size: 26px;
+  color: var(--color-primary-dark);
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+  padding-right: 32px;
+}
+.modal-body p { color: var(--color-text-dim); font-size: 15.5px; }
+.modal-body ul { margin: 22px 0 28px; }
+.modal-body li {
+  display: flex;
+  gap: 10px;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.modal-body li svg { width: 18px; height: 18px; color: var(--color-accent-dark); flex-shrink: 0; margin-top: 2px; }
+
+@media (max-width: 760px) {
+  .feature-modal-inner { grid-template-columns: 1fr; }
+  .modal-visual { padding: 32px 24px; }
+  .modal-body { padding: 28px 24px 28px; }
+  .modal-body h2 { font-size: 22px; padding-right: 0; }
+}
+
 /* ============ Social proof ============ */
 .logo-row {
   display: flex;
@@ -634,6 +815,9 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 640px) {
   .main-nav { display: none; }
   .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+  .site-header .container { gap: 12px; padding: 0 16px; }
+  .header-actions { gap: 8px; }
+  .header-actions .btn { padding: 9px 14px; font-size: 14px; }
   .section { padding: 64px 0; }
   .feature-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -642,6 +826,11 @@ button { font-family: inherit; cursor: pointer; }
   .hero-sub { font-size: 16px; }
   .cta-band { padding: 40px 24px; }
   .section-head h2 { font-size: 26px; }
+}
+
+@media (max-width: 379px) {
+  /* Too narrow for logo + CTA + menu; the CTA stays in the menu panel. */
+  .header-actions .btn { display: none; }
 }
 
 /* Mobile nav panel */

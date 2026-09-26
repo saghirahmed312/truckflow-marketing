@@ -4,8 +4,84 @@
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
   initScrollReveal();
+  initFeatureModal();
   initDemoForm();
 });
+
+// Feature cards open a detail modal. Each card carries its expanded copy in
+// a <template class="feature-detail-tpl">; the single <dialog> is filled from
+// it on click. <dialog> gives Escape-to-close and focus containment for free.
+const CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
+
+function initFeatureModal() {
+  const modal = document.getElementById('feature-modal');
+  if (!modal || typeof modal.showModal !== 'function') return;
+
+  const visual = modal.querySelector('.modal-visual');
+  const eyebrow = modal.querySelector('.modal-eyebrow');
+  const content = modal.querySelector('.modal-content');
+  let trigger = null;
+
+  const open = (card, tpl, btn) => {
+    trigger = btn;
+    eyebrow.textContent = card.querySelector('h3').textContent;
+    content.replaceChildren(tpl.content.cloneNode(true));
+    content.querySelector('h2').id = 'feature-modal-title';
+    content.querySelectorAll('li').forEach(li => li.insertAdjacentHTML('afterbegin', CHECK_ICON));
+
+    const icon = card.querySelector('.feature-icon svg').outerHTML;
+    visual.innerHTML = `
+      <div class="mock-window">
+        <div class="mock-bar"><i></i><i></i><i></i></div>
+        <div class="mock-body">
+          <div class="mock-head">
+            <div class="mock-icon">${icon}</div>
+            <div class="mock-title"><span class="mock-line strong" style="width:70%"></span><span class="mock-line" style="width:45%"></span></div>
+          </div>
+          <div class="mock-row"><span class="mock-line"></span><span class="mock-pill"></span></div>
+          <div class="mock-row"><span class="mock-line" style="max-width:75%"></span><span class="mock-pill blue"></span></div>
+          <div class="mock-row"><span class="mock-line" style="max-width:85%"></span><span class="mock-pill"></span></div>
+        </div>
+      </div>`;
+
+    modal.classList.remove('is-closing');
+    document.documentElement.classList.add('modal-open');
+    modal.showModal();
+    modal.scrollTop = 0;
+  };
+
+  // Play the exit animation, then actually close. The timeout is a fallback
+  // in case animationend never fires (e.g. animations disabled).
+  const close = () => {
+    if (!modal.open || modal.classList.contains('is-closing')) return;
+    modal.classList.add('is-closing');
+    const onEnd = (e) => { if (e.target === modal) finish(); };
+    const finish = () => {
+      if (!modal.classList.contains('is-closing')) return;
+      modal.removeEventListener('animationend', onEnd);
+      modal.classList.remove('is-closing');
+      modal.close();
+    };
+    modal.addEventListener('animationend', onEnd);
+    setTimeout(finish, 350);
+  };
+
+  document.querySelectorAll('.feature-card').forEach(card => {
+    const btn = card.querySelector('.feature-more');
+    const tpl = card.querySelector('.feature-detail-tpl');
+    if (btn && tpl) btn.addEventListener('click', () => open(card, tpl, btn));
+  });
+
+  modal.querySelector('.modal-close').addEventListener('click', close);
+  // Clicks on the dialog element itself (not its contents) are backdrop clicks.
+  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+  // Escape: animate out instead of the browser's instant close.
+  modal.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+  modal.addEventListener('close', () => {
+    document.documentElement.classList.remove('modal-open');
+    trigger?.focus();
+  });
+}
 
 // Fade/slide blocks into view the first time they enter the viewport.
 // Skipped entirely for reduced-motion users or browsers without
